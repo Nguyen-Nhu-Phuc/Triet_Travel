@@ -22,15 +22,15 @@ const create = async (req, res) => {
         }
 
         if (req.files && req.files.length > 0) {
-            const imageUrls = [];
+            const imageArray = [];
             for (const file of req.files) {
                 const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
                 const uploadedImage = await cloudinary.uploader.upload(base64String, {
                     folder: 'places'
                 });
-                imageUrls.push(uploadedImage.secure_url);
+                imageArray.push({ url: uploadedImage.secure_url });
             }
-            data.image = imageUrls;
+            data.image = imageArray;
         }
 
         const place = new Place(data);
