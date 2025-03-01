@@ -6,7 +6,11 @@ const Destination = new Schema(
   {
     name: { type: String, require: true },
     description: { type: String, require: true },
-    image: [{ type: String, require: true }],
+    image: [
+      {
+        url: { type: String }
+      }
+    ],
     hotel_id: [
       {
         type: mongoose.Schema.Types.ObjectId,

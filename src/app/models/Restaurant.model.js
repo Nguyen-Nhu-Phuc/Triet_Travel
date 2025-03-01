@@ -14,7 +14,11 @@ const Restaurant = new Schema(
         ],
         long: { type: String },
         lat: { type: String },
-        image: [{ type: String, require: true }],
+        image: [
+            {
+                url: { type: String }
+            }
+        ],
         rating: { type: Number },
         address: { type: String, require: true },
         price: { type: Number },
