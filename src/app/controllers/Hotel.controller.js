@@ -7,7 +7,6 @@ const create = async (req, res) => {
         const hotel = new Hotel(req.body)
         const destination = await Destination.findById(req.body.destination_id)
         if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
-
         hotel._id = Destination.hotel_id
         await destination.save()
         await hotel.save()
@@ -19,4 +18,4 @@ const create = async (req, res) => {
 
 
 
-module.exports = { create, getAll, getById, update, softDelete, restore }
+module.exports = { create }
