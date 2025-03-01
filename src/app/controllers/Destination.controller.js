@@ -61,26 +61,26 @@ const update = async (req, res) => {
   }
 }
 
-const softDelete = async (req, res) => {
+const remove = async (req, res) => {
   try {
-    const destination = await Destination.delete({ _id: req.params.id })
+    const destination = await Destination.findByIdAndDelete(req.params.id)
     if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
 
-    res.status(200).json({ message: 'Đã xóa địa điểm' })
+    res.status(200).json({ message: 'Đã xóa địa điểm vĩnh viễn' })
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi xóa', error })
   }
 }
 
-const restore = async (req, res) => {
-  try {
-    const destination = await Destination.restore({ _id: req.params.id })
-    if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
+// const restore = async (req, res) => {
+//   try {
+//     const destination = await Destination.restore({ _id: req.params.id })
+//     if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
 
-    res.status(200).json({ message: 'Đã khôi phục địa điểm' })
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi khôi phục', error })
-  }
-}
+//     res.status(200).json({ message: 'Đã khôi phục địa điểm' })
+//   } catch (error) {
+//     res.status(500).json({ message: 'Lỗi khi khôi phục', error })
+//   }
+// }
 
-module.exports = { create, getAll, getById, update, softDelete, restore }
+module.exports = { create, getAll, getById, update, remove }
