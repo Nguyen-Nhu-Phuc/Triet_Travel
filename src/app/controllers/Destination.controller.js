@@ -21,8 +21,8 @@ const getAll = async (req, res) => {
       if (destination.restaurant_id.length > 0) {
         await destination.populate('restaurant_id')
       }
-      if (destination.Place_id.length > 0) {
-        await destination.populate('Place_id')
+      if (destination.place_id.length > 0) {
+        await destination.populate('place_id');
       }
     }
 
