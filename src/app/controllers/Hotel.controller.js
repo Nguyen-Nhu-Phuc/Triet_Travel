@@ -55,7 +55,7 @@ const update = async (req, res) => {
 
         const oldDestination = await Destination.findOne({ hotel_id: hotel._id });
         if (oldDestination) {
-            oldDestination.hotel_id = null;
+            oldDestination.hotel_id = [];
             await oldDestination.save();
         }
 
@@ -84,7 +84,7 @@ const deleteHotel = async (req, res) => {
 
         const destination = await Destination.findOne({ hotel_id: hotel._id });
         if (destination) {
-            destination.hotel_id = null;
+            destination.hotel_id = [];
             await destination.save();
         }
 
