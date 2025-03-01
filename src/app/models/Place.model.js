@@ -8,7 +8,11 @@ const Place = new Schema(
     description: { type: String, require: true },
     long: { type: String },
     lat: { type: String },
-    image: [{ type: String, require: true }],
+    image: [
+      {
+        url: { type: String }
+      }
+    ],
     address: { type: String, require: true },
     destination_id: {
       type: mongoose.Schema.Types.ObjectId,

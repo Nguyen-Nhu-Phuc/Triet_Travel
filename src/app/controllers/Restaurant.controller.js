@@ -1,23 +1,51 @@
 const Destination = require('../models/Destination.model')
 const Restaurant = require('../models/Restaurant.model')
 
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+
 const create = async (req, res) => {
     try {
-        const restaurant = new Restaurant(req.body)
-        const destination = await Destination.findById(req.body.destination_id)
-        if (!destination) return res.status(404).json({
-            status: 1,
-            message: 'Không tìm thấy địa điểm'
-        })
-        destination.restaurant_id = restaurant._id
-        await destination.save()
-        await restaurant.save()
-        res.status(201).json(restaurant)
+        const data = req.body;
+        const destination = await Destination.findById(data.destination_id);
+
+        if (!destination) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy địa điểm'
+            });
+        }
+
+        if (req.files && req.files.length > 0) {
+            const imageArray = [];
+            for (const file of req.files) {
+                const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+                const uploadedImage = await cloudinary.uploader.upload(base64String, {
+                    folder: 'restaurants'
+                });
+                imageArray.push({ url: uploadedImage.secure_url });
+            }
+            data.image = imageArray;
+        }
+
+        const restaurant = new Restaurant(data);
+
+        destination.restaurant_id = restaurant._id;
+        await destination.save();
+        await restaurant.save();
+
+        res.status(201).json(restaurant);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi tạo nhà hàng', error });
     }
-    catch (error) {
-        res.status(500).json({ message: 'Lỗi khi tạo địa điểm', error })
-    }
-}
+};
+
 
 const getAll = async (req, res) => {
     try {
