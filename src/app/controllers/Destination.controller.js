@@ -2,11 +2,34 @@ const Destination = require('../models/Destination.model')
 const Hotel = require('../models/Hotel.model')
 const Place = require('../models/Place.model')
 const Restaurant = require('../models/Restaurant.model')
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 const create = async (req, res) => {
   try {
-    const destination = new Destination(req.body)
+    const data = req.body
+    // console.log(data)
+
+    if (req.files && req.files.length > 0) {
+      const imageArray = []
+      for (const file of req.files) {
+        const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`
+        const uploadedImage = await cloudinary.uploader.upload(base64String, {
+          folder: 'destinations'
+        })
+        imageArray.push({ url: uploadedImage.secure_url })
+      }
+      data.image = imageArray
+    }
+
+    const destination = new Destination(data)
     await destination.save()
+
     res.status(201).json(destination)
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi tạo địa điểm', error })
