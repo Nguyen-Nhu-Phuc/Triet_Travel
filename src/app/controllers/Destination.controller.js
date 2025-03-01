@@ -25,7 +25,7 @@ const getAll = async (req, res) => {
         await destination.populate('restaurant_id')
       }
       if (destination.place_id.length > 0) {
-        await destination.populate('place_id');
+        await destination.populate('place_id')
       }
     }
 
@@ -74,6 +74,8 @@ const remove = async (req, res) => {
 
     // Xóa các Places liên quan đến destination
     await Place.deleteMany({ _id: { $in: destination.place_id } })
+
+    await Restaurant.deleteMany({ _id: { $in: destination.restaurant_id } })
     // Xóa destination
     await Destination.findByIdAndDelete(req.params.id)
 
