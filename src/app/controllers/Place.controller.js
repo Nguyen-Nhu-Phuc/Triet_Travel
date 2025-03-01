@@ -84,7 +84,10 @@ const deletePlace = async (req, res) => {
             destination.place_id = []
             await destination.save()
         }
-        res.status(200).json(place)
+        res.status(200).json({
+            status: 0,
+            message: 'Xóa thành công'
+        });
     } catch (error) {
         res.status(500).json({ message: 'Lỗi khi xóa', error })
     }
