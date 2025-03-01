@@ -54,7 +54,7 @@ const update = async (req, res) => {
 
         const oldDestination = await Destination.findOne({ place_id: place._id });
         if (oldDestination) {
-            oldDestination.place_id = null;
+            oldDestination.place_id = [];
             await oldDestination.save();
         }
         const destination = await Destination
@@ -81,7 +81,7 @@ const deletePlace = async (req, res) => {
         })
         const destination = await Destination.findOne({ place_id: place._id })
         if (destination) {
-            destination.place_id = null
+            destination.place_id = []
             await destination.save()
         }
         res.status(200).json(place)
