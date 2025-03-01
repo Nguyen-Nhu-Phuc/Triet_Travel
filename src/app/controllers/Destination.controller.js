@@ -12,12 +12,26 @@ const create = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const destinations = await Destination.find().populate('hotel_id').populate('restaurant_id')
-    res.status(200).json(destinations)
+    const destinations = await Destination.find({});
+
+    for (let destination of destinations) {
+      if (destination.hotel_id.length > 0) {
+        await destination.populate('hotel_id');
+      }
+      if (destination.restaurant_id.length > 0) {
+        await destination.populate('restaurant_id');
+      }
+      if (destination.Place_id.length > 0) {
+        await destination.populate('Place_id');
+      }
+    }
+
+    res.status(200).json(destinations);
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi lấy danh sách', error })
+    res.status(500).json({ message: 'Lỗi khi lấy danh sách', error });
   }
-}
+};
+
 
 const getById = async (req, res) => {
   try {
