@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 const destinationController = require('../app/controllers/Destination.controller')
 
-router.post('/', destinationController.create)
-router.get('/', destinationController.getAll)
-router.get('/:id', destinationController.getById)
-router.put('/:id', destinationController.update)
-router.delete('/:id', destinationController.softDelete) // Đảm bảo tên hàm chính xác
+router.post('/createdestination', destinationController.create)
+router.get('/getAlldestination', destinationController.getAll)
+router.get('/getBy/:id', destinationController.getById)
+router.put('/update/:id', destinationController.update)
+router.delete('/softdelete/:id', destinationController.softDelete)
 router.patch('/:id/restore', destinationController.restore)
 
 module.exports = router
