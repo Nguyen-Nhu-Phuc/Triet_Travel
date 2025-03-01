@@ -11,6 +11,8 @@ router.get('/getAll', restaurantController.getAll)
 router.get('/getById/:id', restaurantController.getById)
 router.patch('/update/:id', restaurantController.update)
 router.delete('/delete/:id', restaurantController.deleteRestaurant)
+router.delete('/deleteImage/:id/:imageId', restaurantController.deleteImageRestaurant)
+router.patch('/updateImage/:id', upload.array('image', 10), restaurantController.updateImageRestaurant)
 
 
 module.exports = router

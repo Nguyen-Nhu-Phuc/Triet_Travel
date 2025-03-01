@@ -120,5 +120,76 @@ const deletePlace = async (req, res) => {
     }
 }
 
-module.exports = { create, getAll, getById, update, deletePlace }
+const deleteImagePlace = async (req, res) => {
+    try {
+        const place = await Place.findById(req.params.id);
+        if (!place) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy điểm tham quan'
+            });
+        }
+
+        const imageIndex = place.image.findIndex(img => img._id.toString() === req.params.imageId);
+        if (imageIndex === -1) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy ảnh'
+            });
+        }
+
+        const imageUrl = place.image[imageIndex].url;
+
+        const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
+
+        await cloudinary.uploader.destroy(`places/${publicId}`);
+
+        place.image.splice(imageIndex, 1);
+        await place.save();
+
+        res.status(200).json({
+            status: 0,
+            message: 'Xóa ảnh thành công'
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi xóa ảnh', error });
+    }
+};
+
+const updateImagePlace = async (req, res) => {
+    try {
+        const place = await Place.findById(req.params.id);
+        if (!place) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy địa điểm'
+            });
+        }
+
+        if (req.files && req.files.length > 0) {
+            const imageArray = [];
+            for (const file of req.files) {
+                const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+                const uploadedImage = await cloudinary.uploader.upload(base64String, {
+                    folder: 'places'
+                });
+                imageArray.push({ url: uploadedImage.secure_url });
+            }
+            place.image.push(...imageArray);
+        }
+
+        await place.save();
+
+        res.status(200).json({
+            status: 0,
+            message: 'Thêm ảnh thành công',
+            images: place.image
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi cập nhật ảnh', error });
+    }
+};
+
+
+module.exports = { create, getAll, getById, update, deletePlace, deleteImagePlace, updateImagePlace }
 

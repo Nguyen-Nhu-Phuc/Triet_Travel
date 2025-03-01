@@ -119,4 +119,74 @@ const deleteRestaurant = async (req, res) => {
 }
 
 
-module.exports = { create, getAll, getById, update, deleteRestaurant }
+const deleteImageRestaurant = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+        if (!restaurant) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy điểm tham quan'
+            });
+        }
+
+        const imageIndex = restaurant.image.findIndex(img => img._id.toString() === req.params.imageId);
+        if (imageIndex === -1) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy ảnh'
+            });
+        }
+
+        const imageUrl = restaurant.image[imageIndex].url;
+
+        const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
+
+        await cloudinary.uploader.destroy(`restaurants/${publicId}`);
+
+        restaurant.image.splice(imageIndex, 1);
+        await restaurant.save();
+
+        res.status(200).json({
+            status: 0,
+            message: 'Xóa ảnh thành công'
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi xóa ảnh', error });
+    }
+};
+
+const updateImageRestaurant = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+        if (!restaurant) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy địa điểm'
+            });
+        }
+
+        if (req.files && req.files.length > 0) {
+            const imageArray = [];
+            for (const file of req.files) {
+                const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+                const uploadedImage = await cloudinary.uploader.upload(base64String, {
+                    folder: 'restaurants'
+                });
+                imageArray.push({ url: uploadedImage.secure_url });
+            }
+            restaurant.image.push(...imageArray);
+        }
+
+        await restaurant.save();
+
+        res.status(200).json({
+            status: 0,
+            message: 'Thêm ảnh thành công',
+            images: restaurant.image
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi khi cập nhật ảnh', error });
+    }
+};
+
+module.exports = { create, getAll, getById, update, deleteImageRestaurant, deleteRestaurant, updateImageRestaurant }
