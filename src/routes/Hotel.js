@@ -12,5 +12,7 @@ router.get('/getAll', hotelController.getAll)
 router.get('/getById/:id', hotelController.getById)
 router.patch('/update/:id', hotelController.update)
 router.delete('/delete/:id', hotelController.deleteHotel)
+router.delete('/deleteImage/:id/:imageId', hotelController.deleteImageHotel)
+router.patch('/updateImage/:id', upload.array('image', 10), hotelController.updateImageHotel)
 
 module.exports = router
