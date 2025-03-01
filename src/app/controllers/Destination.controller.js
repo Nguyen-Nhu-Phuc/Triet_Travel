@@ -1,6 +1,7 @@
 const Destination = require('../models/Destination.model')
 const Hotel = require('../models/Hotel.model')
 const Place = require('../models/Place.model')
+const Restaurant = require('../models/Restaurant.model')
 
 const create = async (req, res) => {
   try {
