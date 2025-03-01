@@ -19,7 +19,7 @@ const Destination = new Schema(
         ref: 'Restaurant'
       }
     ],
-    Place_id: [
+    place_id: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Place'

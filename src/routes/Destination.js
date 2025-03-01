@@ -7,6 +7,5 @@ router.get('/getAlldestination', destinationController.getAll)
 router.get('/getBy/:id', destinationController.getById)
 router.put('/update/:id', destinationController.update)
 router.delete('/delete/:id', destinationController.remove)
-// router.patch('/:id/restore', destinationController.restore)
 
 module.exports = router

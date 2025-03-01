@@ -1,4 +1,5 @@
 const Destination = require('../models/Destination.model')
+const Hotel = require('../models/Hotel.model')
 
 const create = async (req, res) => {
   try {
@@ -63,24 +64,19 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const destination = await Destination.findByIdAndDelete(req.params.id)
+    const destination = await Destination.findById(req.params.id)
     if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
 
-    res.status(200).json({ message: 'Đã xóa địa điểm vĩnh viễn' })
+    // Xóa các khách sạn liên quan đến destination này
+    await Hotel.deleteMany({ _id: { $in: destination.hotel_id } })
+
+    // Xóa destination
+    await Destination.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({ message: 'Đã xóa địa điểm và khách sạn liên quan' })
   } catch (error) {
     res.status(500).json({ message: 'Lỗi khi xóa', error })
   }
 }
-
-// const restore = async (req, res) => {
-//   try {
-//     const destination = await Destination.restore({ _id: req.params.id })
-//     if (!destination) return res.status(404).json({ message: 'Không tìm thấy địa điểm' })
-
-//     res.status(200).json({ message: 'Đã khôi phục địa điểm' })
-//   } catch (error) {
-//     res.status(500).json({ message: 'Lỗi khi khôi phục', error })
-//   }
-// }
 
 module.exports = { create, getAll, getById, update, remove }
