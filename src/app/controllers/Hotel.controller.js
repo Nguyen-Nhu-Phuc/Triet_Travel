@@ -1,23 +1,50 @@
 const Destination = require('../models/Destination.model')
 const Hotel = require('../models/Hotel.model')
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+})
 
 
 const create = async (req, res) => {
     try {
-        const hotel = new Hotel(req.body)
-        const destination = await Destination.findById(req.body.destination_id)
-        if (!destination) return res.status(404).json({
-            status: 1,
-            message: 'Không tìm thấy địa điểm'
-        })
-        destination.hotel_id = hotel._id
-        await destination.save()
-        await hotel.save()
-        res.status(201).json(hotel)
+        const data = req.body;
+        const destination = await Destination.findById(req.body.destination_id);
+
+        if (!destination) {
+            return res.status(404).json({
+                status: 1,
+                message: 'Không tìm thấy địa điểm'
+            });
+        }
+
+        if (req.files && req.files.length > 0) {
+            const imageUrls = [];
+            for (const file of req.files) {
+                const base64String = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+                const uploadedImage = await cloudinary.uploader.upload(base64String, {
+                    folder: 'hotels'
+                });
+                imageUrls.push(uploadedImage.secure_url);
+            }
+            data.image = imageUrls;
+        }
+
+        const hotel = new Hotel(data);
+
+        destination.hotel_id = hotel._id;
+        await destination.save();
+        await hotel.save();
+
+        res.status(201).json(hotel);
     } catch (error) {
-        res.status(500).json({ message: 'Lỗi khi tạo địa điểm', error })
+        res.status(500).json({ message: 'Lỗi khi tạo khách sạn', error });
     }
-}
+};
+
 
 const getAll = async (req, res) => {
     try {

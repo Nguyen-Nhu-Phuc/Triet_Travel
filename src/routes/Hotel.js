@@ -2,10 +2,15 @@ const express = require('express')
 const router = express.Router()
 const hotelController = require('../app/controllers/Hotel.controller')
 
-router.post('/create', hotelController.create)
+const multer = require('multer');
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.post('/create', upload.array('image', 10), hotelController.create)
 router.get('/getAll', hotelController.getAll)
 router.get('/getById/:id', hotelController.getById)
-router.put('/update/:id', hotelController.update)
+router.patch('/update/:id', hotelController.update)
 router.delete('/delete/:id', hotelController.deleteHotel)
 
 module.exports = router

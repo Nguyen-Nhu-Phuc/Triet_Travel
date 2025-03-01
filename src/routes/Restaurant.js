@@ -1,11 +1,15 @@
 const express = require('express')
 const router = express.Router()
 const restaurantController = require('../app/controllers/Restaurant.controller')
+const multer = require('multer');
 
-router.post('/create', restaurantController.create)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.post('/create', upload.array('image', 10), restaurantController.create)
 router.get('/getAll', restaurantController.getAll)
 router.get('/getById/:id', restaurantController.getById)
-router.put('/update/:id', restaurantController.update)
+router.patch('/update/:id', restaurantController.update)
 router.delete('/delete/:id', restaurantController.deleteRestaurant)
 
 
