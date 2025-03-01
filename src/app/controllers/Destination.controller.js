@@ -1,5 +1,6 @@
 const Destination = require('../models/Destination.model')
 const Hotel = require('../models/Hotel.model')
+const Place = require('../models/Place.model')
 
 const create = async (req, res) => {
   try {
@@ -70,6 +71,8 @@ const remove = async (req, res) => {
     // Xóa các khách sạn liên quan đến destination này
     await Hotel.deleteMany({ _id: { $in: destination.hotel_id } })
 
+    // Xóa các Places liên quan đến destination
+    await Place.deleteMany({ _id: { $in: destination.place_id } })
     // Xóa destination
     await Destination.findByIdAndDelete(req.params.id)
 
