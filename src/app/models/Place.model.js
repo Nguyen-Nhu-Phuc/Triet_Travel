@@ -9,6 +9,7 @@ const Place = new Schema(
     long: { type: String },
     lat: { type: String },
     image: [{ type: String, require: true }],
+    address: { type: String, require: true },
     destination_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Destination'
