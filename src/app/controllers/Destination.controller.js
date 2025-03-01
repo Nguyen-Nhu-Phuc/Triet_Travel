@@ -22,7 +22,7 @@ const getAll = async (req, res) => {
         await destination.populate('restaurant_id');
       }
       if (destination.place_id.length > 0) {
-        await destination.populate('Place_id');
+        await destination.populate('place_id');
       }
     }
 
