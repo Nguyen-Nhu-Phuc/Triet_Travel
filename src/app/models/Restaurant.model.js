@@ -16,6 +16,8 @@ const Restaurant = new Schema(
         lat: { type: String },
         image: [{ type: String, require: true }],
         rating: { type: Number },
+        address: { type: String, require: true },
+        price: { type: Number },
     },
     {
         timestamps: true,

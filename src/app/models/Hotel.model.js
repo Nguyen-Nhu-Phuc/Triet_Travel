@@ -5,15 +5,18 @@ const Schema = mongoose.Schema;
 const Hotel = new Schema(
     {
         name: { type: String, require: true },
-        description: { type: String, require: true },
+        description: { type: String },
         destination_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Destination',
         },
         long: { type: String },
         lat: { type: String },
-        image: [{ type: String, require: true }],
+        image: [{ type: String }],
         rating: { type: Number },
+        address: { type: String, require: true },
+        price: { type: Number },
+        contact: { type: String },
     },
     {
         timestamps: true,
