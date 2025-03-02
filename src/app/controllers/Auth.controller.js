@@ -19,31 +19,23 @@ const authController = {
   },
 
   async signIn(req, res) {
-    const { username, password } = req.body
+    const { email, password } = req.body
     try {
-      const user = await User.findOne({ username })
-      if (!user) return res.status(400).json({ message: 'Invalid username!' })
+      const user = await User.findOne({ email })
+      if (!user) return res.status(400).json({ message: 'Email không tồn tại!' })
 
       const validPassword = await bcrypt.compare(password, user.password)
-      if (!validPassword) return res.status(400).json({ message: 'Invalid password!' })
+      if (!validPassword) return res.status(400).json({ message: 'Mật khẩu không đúng!' })
 
       const { password: _, ...userData } = user._doc
       return res.status(200).json(userData)
     } catch (err) {
-      return res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Lỗi máy chủ!' })
     }
   },
 
   async signOut(req, res) {
-    const { username } = req.body
-    try {
-      const user = await User.findOne({ username })
-      if (!user) return res.status(400).json({ message: 'Invalid username!' })
-
-      return res.status(200).json({ message: 'Logged out successfully!' })
-    } catch (err) {
-      return res.status(500).json({ message: 'Internal server error' })
-    }
+    return res.status(200).json({ message: 'Đăng xuất thành công!' })
   },
 
   async getAllUsers(req, res) {
@@ -51,7 +43,7 @@ const authController = {
       const users = await User.find().select('-password').lean()
       return res.status(200).json(users)
     } catch (err) {
-      return res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Lỗi máy chủ!' })
     }
   }
 }
