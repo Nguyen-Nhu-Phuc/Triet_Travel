@@ -4,15 +4,14 @@ const mongooseDelete = require('mongoose-delete')
 const Schema = mongoose.Schema
 const User = new Schema(
   {
-    username: { type: String, require: true },
     fullName: { type: String, require: true },
     email: { type: String, require: true },
     role: { type: String, default: 'user' },
     password: { type: String, require: true },
     setchedule_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Schedule',
-    },
+      ref: 'Schedule'
+    }
   },
   {
     timestamps: true
