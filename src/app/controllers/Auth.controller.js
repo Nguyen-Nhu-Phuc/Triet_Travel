@@ -7,10 +7,10 @@ dotenv.config()
 
 const authController = {
   async signUp(req, res) {
-    const { fullName, username, email, password } = req.body
+    const { fullName, email, password } = req.body
     try {
       const hashedPassword = await bcrypt.hash(password, 10)
-      const newUser = new User({ fullName, username, email, password: hashedPassword })
+      const newUser = new User({ fullName, email, password: hashedPassword })
       const user = await newUser.save()
       return res.status(200).json(user)
     } catch (error) {
